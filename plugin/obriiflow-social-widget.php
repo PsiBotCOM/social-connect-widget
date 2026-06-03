@@ -27,10 +27,10 @@ if ( is_admin() ) {
 }
 
 function obrisowi_register_menu() {
-    add_menu_page( obrisowi_t( 'admin.menu_title' ), obrisowi_t( 'admin.menu_title' ), 'manage_options', 'obriiflow-social-widget', 'sw_page_dashboard', 'dashicons-share', 80 );
-    add_submenu_page( 'obriiflow-social-widget', obrisowi_t( 'admin.dashboard' ),  obrisowi_t( 'admin.dashboard' ),  'manage_options', 'obriiflow-social-widget',           'sw_page_dashboard' );
-    add_submenu_page( 'obriiflow-social-widget', obrisowi_t( 'admin.messengers' ), obrisowi_t( 'admin.messengers' ), 'manage_options', 'obriiflow-social-widget-messengers', 'sw_page_messengers' );
-    add_submenu_page( 'obriiflow-social-widget', obrisowi_t( 'admin.settings' ),   obrisowi_t( 'admin.settings' ),   'manage_options', 'obriiflow-social-widget-settings',   'sw_page_settings' );
+    add_menu_page( obrisowi_t( 'admin.menu_title' ), obrisowi_t( 'admin.menu_title' ), 'manage_options', 'obriiflow-social-widget', 'obrisowi_page_dashboard', 'dashicons-share', 80 );
+    add_submenu_page( 'obriiflow-social-widget', obrisowi_t( 'admin.dashboard' ),  obrisowi_t( 'admin.dashboard' ),  'manage_options', 'obriiflow-social-widget',           'obrisowi_page_dashboard' );
+    add_submenu_page( 'obriiflow-social-widget', obrisowi_t( 'admin.messengers' ), obrisowi_t( 'admin.messengers' ), 'manage_options', 'obriiflow-social-widget-messengers', 'obrisowi_page_messengers' );
+    add_submenu_page( 'obriiflow-social-widget', obrisowi_t( 'admin.settings' ),   obrisowi_t( 'admin.settings' ),   'manage_options', 'obriiflow-social-widget-settings',   'obrisowi_page_settings' );
 }
 
 /* ── AJAX Tracking ── */

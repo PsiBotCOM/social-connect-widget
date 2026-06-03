@@ -1,12 +1,15 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-function sw_page_messengers() {
+function obrisowi_page_messengers() {
     if ( ! current_user_can( 'manage_options' ) ) return;
 
     if ( isset( $_POST['obrisowi_messengers_nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['obrisowi_messengers_nonce'] ) ), 'obrisowi_save_messengers' ) ) {
         $defaults = obrisowi_default_messengers();
-        $posted   = isset( $_POST['messengers'] ) ? wp_unslash( (array) $_POST['messengers'] ) : [];
+        $raw    = isset( $_POST['messengers'] ) ? wp_unslash( (array) $_POST['messengers'] ) : [];
+        $posted = array_map( function( $entry ) {
+            return is_array( $entry ) ? array_map( 'sanitize_text_field', $entry ) : sanitize_text_field( $entry );
+        }, $raw );
         $save     = [];
         foreach ( $posted as $entry ) {
             if ( ! is_array( $entry ) ) {

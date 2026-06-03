@@ -1,7 +1,7 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-function sw_page_dashboard() {
+function obrisowi_page_dashboard() {
     if ( ! current_user_can( 'manage_options' ) ) return;
 
     global $wpdb;
@@ -17,7 +17,7 @@ function sw_page_dashboard() {
     // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
     $total_views = wp_cache_get( 'obrisowi_total_views' );
     if ( false === $total_views ) {
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $table is built from $wpdb->prefix only, safe
+        // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- $table uses $wpdb->prefix only, safe
         $total_views = (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM `{$table}` WHERE type = %s", 'view' ) );
         wp_cache_set( 'obrisowi_total_views', $total_views, '', 300 );
     }
@@ -26,7 +26,7 @@ function sw_page_dashboard() {
     // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
     $total_clicks = wp_cache_get( 'obrisowi_total_clicks' );
     if ( false === $total_clicks ) {
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $table is built from $wpdb->prefix only, safe
+        // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- $table uses $wpdb->prefix only, safe
         $total_clicks = (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM `{$table}` WHERE type = %s", 'click' ) );
         wp_cache_set( 'obrisowi_total_clicks', $total_clicks, '', 300 );
     }
@@ -35,9 +35,8 @@ function sw_page_dashboard() {
     // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
     $clicks_by_messenger = wp_cache_get( 'obrisowi_clicks_by_messenger' );
     if ( false === $clicks_by_messenger ) {
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $table is built from $wpdb->prefix only, safe
+        // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- $table uses $wpdb->prefix only, safe
         $clicks_by_messenger = $wpdb->get_results(
-            // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $table uses $wpdb->prefix only, safe
             $wpdb->prepare(
                 "SELECT messenger, COUNT(*) as cnt FROM `{$table}`
                  WHERE type = %s AND messenger IS NOT NULL AND messenger != ''
@@ -53,9 +52,8 @@ function sw_page_dashboard() {
     // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
     $daily_rows = wp_cache_get( 'obrisowi_daily_rows' );
     if ( false === $daily_rows ) {
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $table is built from $wpdb->prefix only, safe
+        // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- $table uses $wpdb->prefix only, safe
         $daily_rows = $wpdb->get_results(
-            // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $table uses $wpdb->prefix only, safe
             $wpdb->prepare(
                 "SELECT DATE(created_at) as day, type, COUNT(*) as cnt
                  FROM `{$table}` WHERE created_at >= %s

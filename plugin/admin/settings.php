@@ -1,7 +1,7 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-function sw_page_settings() {
+function obrisowi_page_settings() {
     if ( ! current_user_can( 'manage_options' ) ) return;
 
     if ( isset( $_POST['obrisowi_settings_nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['obrisowi_settings_nonce'] ) ), 'obrisowi_save_settings' ) ) {
