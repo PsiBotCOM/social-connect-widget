@@ -1,7 +1,7 @@
 (function () {
     'use strict';
 
-    var cfg = window.SW_CONFIG || {};
+    var cfg = window.OBRISOWI_CONFIG || {};
     var interval    = cfg.carousel_interval || 1500;
     var animation   = cfg.animation || 'fade';
     var bubbleOn    = cfg.bubble_enabled || false;
@@ -21,7 +21,7 @@
     function track(type, messenger) {
         if (!ajaxUrl || !nonce) return;
         var data = new FormData();
-        data.append('action', 'sw_track');
+        data.append('action', 'obrisowi_track');
         data.append('nonce', nonce);
         data.append('type', type);
         if (messenger) data.append('messenger', messenger);

@@ -1,5 +1,9 @@
 <?php
 if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) exit;
 
-delete_option( 'sw_general_settings' );
-delete_option( 'sw_messengers' );
+global $wpdb;
+delete_option( 'obrisowi_general_settings' );
+delete_option( 'obrisowi_messengers' );
+delete_option( 'obrisowi_db_version' );
+// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.SchemaChange
+$wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}obrisowi_stats" );

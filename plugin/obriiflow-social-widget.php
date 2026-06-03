@@ -12,38 +12,38 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'SW_VERSION',         '1.0.1' );
-define( 'SW_DB_VERSION',      '1.0.1' );
-define( 'SW_DIR',             plugin_dir_path( __FILE__ ) );
-define( 'SW_URL',             plugin_dir_url( __FILE__ ) );
-define( 'SW_OPT_GENERAL',    'sw_general_settings' );
-define( 'SW_OPT_MESSENGERS', 'sw_messengers' );
+define( 'OBRISOWI_VERSION',         '1.0.1' );
+define( 'OBRISOWI_DB_VERSION',      '1.0.1' );
+define( 'OBRISOWI_DIR',             plugin_dir_path( __FILE__ ) );
+define( 'OBRISOWI_URL',             plugin_dir_url( __FILE__ ) );
+define( 'OBRISOWI_OPT_GENERAL',    'obrisowi_general_settings' );
+define( 'OBRISOWI_OPT_MESSENGERS', 'obrisowi_messengers' );
 
 if ( is_admin() ) {
-    require_once SW_DIR . 'admin/dashboard.php';
-    require_once SW_DIR . 'admin/settings.php';
-    require_once SW_DIR . 'admin/messengers.php';
-    add_action( 'admin_menu', 'sw_register_menu' );
+    require_once OBRISOWI_DIR . 'admin/dashboard.php';
+    require_once OBRISOWI_DIR . 'admin/settings.php';
+    require_once OBRISOWI_DIR . 'admin/messengers.php';
+    add_action( 'admin_menu', 'obrisowi_register_menu' );
 }
 
-function sw_register_menu() {
-    add_menu_page( sw_t( 'admin.menu_title' ), sw_t( 'admin.menu_title' ), 'manage_options', 'obriiflow-social-widget', 'sw_page_dashboard', 'dashicons-share', 80 );
-    add_submenu_page( 'obriiflow-social-widget', sw_t( 'admin.dashboard' ),  sw_t( 'admin.dashboard' ),  'manage_options', 'obriiflow-social-widget',           'sw_page_dashboard' );
-    add_submenu_page( 'obriiflow-social-widget', sw_t( 'admin.messengers' ), sw_t( 'admin.messengers' ), 'manage_options', 'obriiflow-social-widget-messengers', 'sw_page_messengers' );
-    add_submenu_page( 'obriiflow-social-widget', sw_t( 'admin.settings' ),   sw_t( 'admin.settings' ),   'manage_options', 'obriiflow-social-widget-settings',   'sw_page_settings' );
+function obrisowi_register_menu() {
+    add_menu_page( obrisowi_t( 'admin.menu_title' ), obrisowi_t( 'admin.menu_title' ), 'manage_options', 'obriiflow-social-widget', 'sw_page_dashboard', 'dashicons-share', 80 );
+    add_submenu_page( 'obriiflow-social-widget', obrisowi_t( 'admin.dashboard' ),  obrisowi_t( 'admin.dashboard' ),  'manage_options', 'obriiflow-social-widget',           'sw_page_dashboard' );
+    add_submenu_page( 'obriiflow-social-widget', obrisowi_t( 'admin.messengers' ), obrisowi_t( 'admin.messengers' ), 'manage_options', 'obriiflow-social-widget-messengers', 'sw_page_messengers' );
+    add_submenu_page( 'obriiflow-social-widget', obrisowi_t( 'admin.settings' ),   obrisowi_t( 'admin.settings' ),   'manage_options', 'obriiflow-social-widget-settings',   'sw_page_settings' );
 }
 
 /* ── AJAX Tracking ── */
-add_action( 'wp_ajax_sw_track',        'sw_ajax_track' );
-add_action( 'wp_ajax_nopriv_sw_track', 'sw_ajax_track' );
+add_action( 'wp_ajax_obrisowi_track',        'obrisowi_ajax_track' );
+add_action( 'wp_ajax_nopriv_obrisowi_track', 'obrisowi_ajax_track' );
 
-function sw_ajax_track() {
-    if ( ! check_ajax_referer( 'sw_track_nonce', 'nonce', false ) ) {
+function obrisowi_ajax_track() {
+    if ( ! check_ajax_referer( 'obrisowi_track_nonce', 'nonce', false ) ) {
         wp_die( '0' );
     }
 
     global $wpdb;
-    $table = $wpdb->prefix . 'sw_stats';
+    $table = $wpdb->prefix . 'obrisowi_stats';
 
     // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- AJAX tracking insert, caching not applicable
     if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table ) ) !== $table ) {
@@ -69,45 +69,45 @@ function sw_ajax_track() {
     );
 
     if ( false !== $inserted ) {
-        wp_cache_delete( 'scw_total_views' );
-        wp_cache_delete( 'scw_total_clicks' );
-        wp_cache_delete( 'scw_clicks_by_messenger' );
-        wp_cache_delete( 'scw_daily_rows' );
+        wp_cache_delete( 'obrisowi_total_views' );
+        wp_cache_delete( 'obrisowi_total_clicks' );
+        wp_cache_delete( 'obrisowi_clicks_by_messenger' );
+        wp_cache_delete( 'obrisowi_daily_rows' );
     }
 
     wp_die( '1' );
 }
 
 /* ── Frontend ── */
-add_action( 'wp_enqueue_scripts', 'sw_enqueue' );
+add_action( 'wp_enqueue_scripts', 'obrisowi_enqueue' );
 
 // Try all possible hooks — Flatsome uses wp_footer but some themes skip it
-add_action( 'wp_footer',    'sw_render_widget', 100 );
-add_action( 'wp_body_open', 'sw_render_widget', 100 );
-add_action( 'shutdown',     'sw_render_via_ob', 0 );
+add_action( 'wp_footer',    'obrisowi_render_widget', 100 );
+add_action( 'wp_body_open', 'obrisowi_render_widget', 100 );
+add_action( 'shutdown',     'obrisowi_render_via_ob', 0 );
 
-function sw_render_via_ob() {
+function obrisowi_render_via_ob() {
     if ( ! defined( 'SW_RENDERED' ) && ! is_admin() && ! wp_doing_ajax() ) {
         // Safety no-op placeholder
     }
 }
 
-$GLOBALS['sw_rendered'] = false;
+$GLOBALS['obrisowi_rendered'] = false;
 
-function sw_render_widget() {
-    if ( ! empty( $GLOBALS['sw_rendered'] ) ) return;
+function obrisowi_render_widget() {
+    if ( ! empty( $GLOBALS['obrisowi_rendered'] ) ) return;
 
-    $g = sw_get_general();
+    $g = obrisowi_get_general();
     if ( empty( $g['enabled'] ) ) return;
-    $messengers = sw_get_active_messengers();
+    $messengers = obrisowi_get_active_messengers();
     if ( empty( $messengers ) ) return;
 
-    $GLOBALS['sw_rendered'] = true;
+    $GLOBALS['obrisowi_rendered'] = true;
 
     $position      = $g['position'] ?? 'right';
     $offset_side   = intval( $g['offset_side'] ?? 20 );
     $offset_bottom = intval( $g['offset_bottom'] ?? 20 );
-    $bubble_text   = esc_html( $g['bubble_text'] ?: sw_t( 'frontend.bubble_default' ) );
+    $bubble_text   = esc_html( $g['bubble_text'] ?: obrisowi_t( 'frontend.bubble_default' ) );
     $bubble_font_size = max( 10, min( 40, intval( $g['bubble_font_size'] ?? 15 ) ) );
     $bubble_on     = ! empty( $g['bubble_enabled'] );
     $show_labels   = ! empty( $g['show_labels'] );
@@ -133,7 +133,7 @@ function sw_render_widget() {
                data-messenger="<?php echo esc_attr( $m['key'] ?? '' ); ?>"
                target="_blank" rel="noopener noreferrer"
                aria-label="<?php echo esc_attr( $m['label'] ); ?>">
-                <span class="sw-item-icon"><?php echo wp_kses( sw_get_messenger_icon_html( $m, 'sw-icon-img', '' ), $allowed_img ); ?></span>
+                <span class="sw-item-icon"><?php echo wp_kses( obrisowi_get_messenger_icon_html( $m, 'sw-icon-img', '' ), $allowed_img ); ?></span>
                 <?php if ( $show_labels ) : ?><span class="sw-item-label"><?php echo esc_html( $m['label'] ); ?></span><?php endif; ?>
             </a>
             <?php endforeach; ?>
@@ -142,7 +142,7 @@ function sw_render_widget() {
         <div class="sw-launcher">
             <?php if ( $bubble_on ) : ?>
             <div id="sw-bubble" class="sw-bubble" style="display:none;">
-                <span><?php echo esc_html( $g['bubble_text'] ?: sw_t( 'frontend.bubble_default' ) ); ?></span>
+                <span><?php echo esc_html( $g['bubble_text'] ?: obrisowi_t( 'frontend.bubble_default' ) ); ?></span>
             </div>
             <?php endif; ?>
 
@@ -150,7 +150,7 @@ function sw_render_widget() {
                 <span id="sw-carousel" class="sw-carousel">
                     <?php foreach ( $messengers as $idx => $m ) : ?>
                     <span class="sw-slide<?php echo $idx === 0 ? ' active' : ''; ?>">
-                        <?php echo wp_kses( sw_get_messenger_icon_html( $m, 'sw-icon-img', '' ), $allowed_img ); ?>
+                        <?php echo wp_kses( obrisowi_get_messenger_icon_html( $m, 'sw-icon-img', '' ), $allowed_img ); ?>
                     </span>
                     <?php endforeach; ?>
                 </span>
@@ -161,41 +161,90 @@ function sw_render_widget() {
     <?php
 }
 
-function sw_enqueue() {
-    $g = sw_get_general();
+function obrisowi_enqueue() {
+    $g = obrisowi_get_general();
     if ( empty( $g['enabled'] ) ) return;
-    $messengers = sw_get_active_messengers();
+    $messengers = obrisowi_get_active_messengers();
     if ( empty( $messengers ) ) return;
 
-    $css_version = file_exists( SW_DIR . 'assets/widget.css' ) ? filemtime( SW_DIR . 'assets/widget.css' ) : SW_VERSION;
-    $js_version  = file_exists( SW_DIR . 'assets/widget.js' ) ? filemtime( SW_DIR . 'assets/widget.js' ) : SW_VERSION;
+    $css_version = file_exists( OBRISOWI_DIR . 'assets/widget.css' ) ? filemtime( OBRISOWI_DIR . 'assets/widget.css' ) : OBRISOWI_VERSION;
+    $js_version  = file_exists( OBRISOWI_DIR . 'assets/widget.js' ) ? filemtime( OBRISOWI_DIR . 'assets/widget.js' ) : OBRISOWI_VERSION;
 
-    wp_enqueue_style(  'obriiflow-social-widget', SW_URL . 'assets/widget.css', [], $css_version );
-    wp_enqueue_script( 'obriiflow-social-widget', SW_URL . 'assets/widget.js',  [], $js_version, true );
-    wp_localize_script( 'obriiflow-social-widget', 'SW_CONFIG', [
+    wp_enqueue_style(  'obriiflow-social-widget', OBRISOWI_URL . 'assets/widget.css', [], $css_version );
+    wp_enqueue_script( 'obriiflow-social-widget', OBRISOWI_URL . 'assets/widget.js',  [], $js_version, true );
+    wp_localize_script( 'obriiflow-social-widget', 'OBRISOWI_CONFIG', [
         'carousel_interval' => (float) ( $g['carousel_interval'] ?? 1.5 ) * 1000,
         'animation'         => $g['animation'] ?? 'fade',
         'position'          => $g['position'] ?? 'right',
         'bubble_enabled'    => ! empty( $g['bubble_enabled'] ),
         'bubble_delay'      => (float) ( $g['bubble_delay'] ?? 3 ) * 1000,
         'ajax_url'          => admin_url( 'admin-ajax.php' ),
-        'nonce'             => wp_create_nonce( 'sw_track_nonce' ),
+        'nonce'             => wp_create_nonce( 'obrisowi_track_nonce' ),
     ] );
 }
 
+function obrisowi_enqueue_admin_assets( $hook ) {
+    if ( strpos( $hook, 'obriiflow-social-widget' ) === false ) return;
+
+    wp_enqueue_style(
+        'obrisowi-admin',
+        OBRISOWI_URL . 'admin/admin.css',
+        [],
+        OBRISOWI_VERSION
+    );
+
+    if ( strpos( $hook, 'messengers' ) !== false ) {
+        $list        = get_option( OBRISOWI_OPT_MESSENGERS, [] );
+        $defaults    = obrisowi_default_messengers();
+        $defaults_js = [];
+        foreach ( $defaults as $key => $m ) {
+            $defaults_js[ $key ] = [ 'label' => $m['label'], 'icon_url' => $m['icon_url'] ];
+        }
+        $placeholders = [
+            'instagram' => 'https://instagram.com/yourname',
+            'telegram'  => 'https://t.me/yourname',
+            'messenger' => 'https://m.me/yourpagename',
+            'whatsapp'  => 'https://wa.me/380XXXXXXXXX',
+            'viber'     => 'viber://chat?number=+380XXXXXXXXX',
+            'facebook'  => 'https://facebook.com/yourpage',
+            'tiktok'    => 'https://tiktok.com/@yourname',
+            'twitter'   => 'https://x.com/yourname',
+            'linkedin'  => 'https://linkedin.com/company/yourcompany',
+            'email'     => 'mailto:hello@yourdomain.com',
+            'youtube'   => 'https://youtube.com/@yourchannel',
+        ];
+
+        wp_enqueue_script(
+            'obrisowi-messengers',
+            OBRISOWI_URL . 'admin/messengers.js',
+            [],
+            OBRISOWI_VERSION,
+            true
+        );
+        wp_localize_script( 'obrisowi-messengers', 'OBRISOWI_MESSENGERS', [
+            'defs'         => $defaults_js,
+            'placeholders' => $placeholders,
+            'deleteLabel'  => obrisowi_t( 'admin.delete' ),
+            'emptyMsg'     => obrisowi_t( 'admin.no_messengers' ),
+            'nextIdx'      => count( $list ) + 100,
+        ] );
+    }
+}
+add_action( 'admin_enqueue_scripts', 'obrisowi_enqueue_admin_assets' );
+
 /* ── Helpers ── */
 
-function sw_t( $key ) {
+function obrisowi_t( $key ) {
     static $cache = [];
 
-    $opts = get_option( SW_OPT_GENERAL, [] );
+    $opts = get_option( OBRISOWI_OPT_GENERAL, [] );
     $lang = $opts['language'] ?? 'en';
     if ( ! in_array( $lang, [ 'en', 'uk', 'ru' ], true ) ) {
         $lang = 'en';
     }
 
     if ( ! isset( $cache[ $lang ] ) ) {
-        $file = SW_DIR . 'languages/' . $lang . '.json';
+        $file = OBRISOWI_DIR . 'languages/' . $lang . '.json';
         $cache[ $lang ] = file_exists( $file )
             ? ( json_decode( file_get_contents( $file ), true ) ?: [] )
             : [];
@@ -207,7 +256,7 @@ function sw_t( $key ) {
         if ( ! isset( $val[ $part ] ) ) {
             if ( $lang !== 'en' ) {
                 if ( ! isset( $cache['en'] ) ) {
-                    $f = SW_DIR . 'languages/en.json';
+                    $f = OBRISOWI_DIR . 'languages/en.json';
                     $cache['en'] = file_exists( $f )
                         ? ( json_decode( file_get_contents( $f ), true ) ?: [] )
                         : [];
@@ -226,8 +275,8 @@ function sw_t( $key ) {
     return is_string( $val ) ? $val : $key;
 }
 
-function sw_get_general() {
-    return wp_parse_args( get_option( SW_OPT_GENERAL, [] ), [
+function obrisowi_get_general() {
+    return wp_parse_args( get_option( OBRISOWI_OPT_GENERAL, [] ), [
         'enabled'           => 1,
         'position'          => 'right',
         'offset_side'       => 20,
@@ -243,9 +292,9 @@ function sw_get_general() {
     ] );
 }
 
-function sw_get_active_messengers() {
-    $list     = get_option( SW_OPT_MESSENGERS, [] );
-    $defaults = sw_default_messengers();
+function obrisowi_get_active_messengers() {
+    $list     = get_option( OBRISOWI_OPT_MESSENGERS, [] );
+    $defaults = obrisowi_default_messengers();
     $active   = [];
     foreach ( $list as $entry ) {
         $key = $entry['key'] ?? '';
@@ -260,7 +309,7 @@ function sw_get_active_messengers() {
     return $active;
 }
 
-function sw_get_messenger_icon_html( $messenger, $class = 'sw-icon-img', $alt = null ) {
+function obrisowi_get_messenger_icon_html( $messenger, $class = 'sw-icon-img', $alt = null ) {
     $icon_url = $messenger['icon_url'] ?? '';
     if ( ! $icon_url ) {
         return '';
@@ -276,9 +325,9 @@ function sw_get_messenger_icon_html( $messenger, $class = 'sw-icon-img', $alt = 
     );
 }
 
-function sw_default_messengers() {
-    $icons_dir = SW_DIR . 'assets/icons/';
-    $icons_url = SW_URL . 'assets/icons/';
+function obrisowi_default_messengers() {
+    $icons_dir = OBRISOWI_DIR . 'assets/icons/';
+    $icons_url = OBRISOWI_URL . 'assets/icons/';
 
     $items = [
         'instagram' => [ 'label' => 'Instagram',   'order' => 1  ],
@@ -306,11 +355,11 @@ function sw_default_messengers() {
 
 /* ── DB setup ── */
 
-function sw_install_db() {
+function obrisowi_install_db() {
     global $wpdb;
     $charset = $wpdb->get_charset_collate();
     require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-    dbDelta( "CREATE TABLE {$wpdb->prefix}sw_stats (
+    dbDelta( "CREATE TABLE {$wpdb->prefix}obrisowi_stats (
   id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   type varchar(10) NOT NULL,
   messenger varchar(50) DEFAULT NULL,
@@ -318,23 +367,23 @@ function sw_install_db() {
   PRIMARY KEY  (id),
   KEY type_created (type,created_at)
 ) {$charset};" );
-    update_option( 'sw_db_version', SW_DB_VERSION );
-    if ( false === get_option( SW_OPT_GENERAL ) ) {
+    update_option( 'obrisowi_db_version', OBRISOWI_DB_VERSION );
+    if ( false === get_option( OBRISOWI_OPT_GENERAL ) ) {
         $locale    = get_locale();
         $auto_lang = ( 0 === strpos( $locale, 'uk' ) ) ? 'uk'
                    : ( ( 0 === strpos( $locale, 'ru' ) ) ? 'ru' : 'en' );
-        add_option( SW_OPT_GENERAL, [ 'language' => $auto_lang ] );
+        add_option( OBRISOWI_OPT_GENERAL, [ 'language' => $auto_lang ] );
     }
-    if ( false === get_option( SW_OPT_MESSENGERS ) ) add_option( SW_OPT_MESSENGERS, [
+    if ( false === get_option( OBRISOWI_OPT_MESSENGERS ) ) add_option( OBRISOWI_OPT_MESSENGERS, [
         [ 'key' => 'telegram', 'label' => 'Telegram', 'url' => '' ],
     ] );
 }
 
 // Runs on every load — creates/upgrades the table when version changes
 add_action( 'plugins_loaded', function () {
-    if ( get_option( 'sw_db_version' ) !== SW_DB_VERSION ) {
-        sw_install_db();
+    if ( get_option( 'obrisowi_db_version' ) !== OBRISOWI_DB_VERSION ) {
+        obrisowi_install_db();
     }
 } );
 
-register_activation_hook( __FILE__, 'sw_install_db' );
+register_activation_hook( __FILE__, 'obrisowi_install_db' );

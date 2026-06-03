@@ -1,0 +1,63 @@
+/* === Dashboard === */
+.sw-dashboard .sw-stats-cards{display:flex;gap:16px;margin-bottom:20px;flex-wrap:wrap;}
+.sw-stat-card{background:#fff;border:1px solid #c3c4c7;border-radius:4px;padding:20px 32px;min-width:160px;text-align:center;}
+.sw-stat-value{font-size:40px;font-weight:700;color:#2271b1;line-height:1;}
+.sw-stat-label{font-size:13px;color:#646970;margin-top:6px;}
+
+.sw-admin .sw-card{background:#fff;border:1px solid #c3c4c7;border-radius:4px;padding:1px 20px 20px;margin-bottom:20px;}
+.sw-admin .sw-card h2{font-size:14px;font-weight:600;margin-bottom:12px;}
+.sw-no-data{color:#999;font-style:italic;padding:8px 0;}
+
+.sw-chart-legend{display:flex;gap:16px;margin-bottom:10px;font-size:12px;}
+.sw-leg{display:flex;align-items:center;gap:5px;}
+.sw-leg::before{content:'';display:inline-block;width:12px;height:12px;border-radius:2px;}
+.sw-leg-v::before{background:#2271b1;}
+.sw-leg-c::before{background:#f0a500;}
+
+.sw-chart-wrap{overflow-x:auto;}
+.sw-chart-bars{display:flex;align-items:flex-end;gap:3px;height:120px;border-bottom:2px solid #e0e0e0;padding-bottom:0;min-width:560px;}
+.sw-chart-col{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;flex:1;min-width:14px;height:100%;}
+.sw-bar-pair{display:flex;align-items:flex-end;gap:1px;width:100%;}
+.sw-bar{flex:1;min-height:2px;border-radius:2px 2px 0 0;transition:opacity .15s;}
+.sw-bar:hover{opacity:.75;}
+.sw-bar-v{background:#2271b1;}
+.sw-bar-c{background:#f0a500;}
+.sw-bar-label{font-size:9px;color:#aaa;margin-top:3px;white-space:nowrap;}
+
+.sw-ms-stats{display:flex;flex-direction:column;gap:8px;}
+.sw-ms-row{display:flex;align-items:center;gap:12px;padding:4px 0;}
+.sw-ms-icon{width:32px;height:32px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.sw-dashboard-icon{width:32px;height:32px;display:block;object-fit:contain;}
+.sw-ms-name{width:110px;font-size:13px;font-weight:500;}
+.sw-ms-bar-wrap{flex:1;height:14px;background:#f0f0f0;border-radius:7px;overflow:hidden;}
+.sw-ms-bar{height:100%;background:#f0a500;border-radius:7px;transition:width .3s ease;}
+.sw-ms-count{width:40px;text-align:right;font-size:13px;font-weight:600;color:#444;}
+
+/* === Messengers === */
+.sw-admin table td { vertical-align: middle; padding: 9px 8px; }
+.sw-icon-cell { line-height: 0; }
+.sw-admin-icon { width: 32px; height: 32px; display: block; object-fit: contain; }
+.sw-handle { cursor: grab; color: #aaa; font-size: 18px; text-align: center; }
+.sw-handle:active { cursor: grabbing; }
+.sw-row.sw-dragging { opacity: .5; background: #f0f6fc !important; }
+.sw-label-input { width: 100%; max-width: 150px; }
+.sw-url-input { width: 100%; max-width: 400px; }
+.sw-empty-msg { text-align: center; color: #999; padding: 20px !important; font-style: italic; }
+.sw-delete-col { width: 56px; }
+.sw-admin table td.sw-delete-cell { padding: 0 8px; text-align: center; overflow: visible; }
+.sw-delete-btn { width: 30px; height: 30px; background: none; border: none; cursor: pointer; color: #b32d2e; padding: 0; line-height: 1; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; vertical-align: middle; }
+.sw-delete-btn svg { width: 16px; height: 16px; display: block; flex: 0 0 auto; overflow: visible; }
+.sw-delete-btn:hover { background: #fbeaea; }
+
+.sw-add-card h2 { font-size: 14px; font-weight: 600; margin-bottom: 12px; }
+.sw-add-form { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.sw-add-select-wrap { display: flex; align-items: center; gap: 8px; }
+.sw-add-select-wrap img { flex-shrink: 0; }
+
+/* === Settings === */
+.sw-toggle-label{display:inline-flex;align-items:center;gap:10px;cursor:pointer;}
+.sw-toggle-label input{display:none;}
+.sw-toggle-switch{position:relative;width:36px;height:20px;background:#ccc;border-radius:10px;transition:background .2s;flex-shrink:0;}
+.sw-toggle-switch::after{content:'';position:absolute;top:2px;left:2px;width:16px;height:16px;background:#fff;border-radius:50%;transition:transform .2s;}
+.sw-toggle-label input:checked+.sw-toggle-switch{background:#2271b1;}
+.sw-toggle-label input:checked+.sw-toggle-switch::after{transform:translateX(16px);}
