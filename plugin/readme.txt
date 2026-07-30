@@ -58,6 +58,7 @@ Yes, tested with Elementor, Flatsome, and standard WordPress themes.
 == Changelog ==
 
 = 1.0.2 =
+* Fix: Viber (and other app-scheme) links were silently stripped to an empty href by esc_url(), so clicking Viber did nothing on any device
 * Fix: Viber links now stay in the same tab on mobile so the app opens correctly instead of reloading the page
 * Widget view counter is now deduplicated per browser for 24 hours (click stats unaffected)
 

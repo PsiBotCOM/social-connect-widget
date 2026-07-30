@@ -123,6 +123,10 @@ function obrisowi_render_widget() {
             'height'   => true,
         ],
     ];
+    // esc_url() strips any scheme not in its default whitelist — add the
+    // custom app schemes used for messenger deep links (viber://, tg://)
+    // or it silently mangles the href down to an empty string.
+    $allowed_url_protocols = array_merge( wp_allowed_protocols(), [ 'viber', 'tg' ] );
     ?>
     <div id="sw-widget" data-position="<?php echo esc_attr( $position ); ?>"
          style="position:fixed;<?php echo esc_attr( $side_prop ); ?>:<?php echo absint( $offset_side ); ?>px;bottom:<?php echo absint( $offset_bottom ); ?>px;z-index:99999;display:flex;flex-direction:column;align-items:<?php echo $position === 'left' ? 'flex-start' : 'flex-end'; ?>;gap:10px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;--sw-bubble-font-size:<?php echo absint( $bubble_font_size ); ?>px;">
@@ -134,7 +138,7 @@ function obrisowi_render_widget() {
                 // in the same tab on mobile; desktop keeps target="_blank" as before.
                 $new_tab = ! ( wp_is_mobile() && obrisowi_is_app_scheme_url( $m['url'] ) );
             ?>
-            <a href="<?php echo esc_url( $m['url'] ); ?>" class="sw-item"
+            <a href="<?php echo esc_url( $m['url'], $allowed_url_protocols ); ?>" class="sw-item"
                data-messenger="<?php echo esc_attr( $m['key'] ?? '' ); ?>"
                <?php if ( $new_tab ) : ?>target="_blank" rel="noopener noreferrer"<?php endif; ?>
                aria-label="<?php echo esc_attr( $m['label'] ); ?>">
