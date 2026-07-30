@@ -3,7 +3,7 @@
  * Plugin Name: ObriiFlow Social Widget
  * Plugin URI:  https://obriiflow.com/plugin/
  * Description: Floating social messenger widget with carousel, bubble, and full admin panel.
- * Version:     1.0.1
+ * Version:     1.0.2
  * Author:      obriiflow.com
  * Author URI:  https://obriiflow.com
  * License:     GPL-2.0-or-later
@@ -12,7 +12,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'OBRISOWI_VERSION',         '1.0.1' );
+define( 'OBRISOWI_VERSION',         '1.0.2' );
 define( 'OBRISOWI_DB_VERSION',      '1.0.1' );
 define( 'OBRISOWI_DIR',             plugin_dir_path( __FILE__ ) );
 define( 'OBRISOWI_URL',             plugin_dir_url( __FILE__ ) );
@@ -128,10 +128,15 @@ function obrisowi_render_widget() {
          style="position:fixed;<?php echo esc_attr( $side_prop ); ?>:<?php echo absint( $offset_side ); ?>px;bottom:<?php echo absint( $offset_bottom ); ?>px;z-index:99999;display:flex;flex-direction:column;align-items:<?php echo $position === 'left' ? 'flex-start' : 'flex-end'; ?>;gap:10px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;--sw-bubble-font-size:<?php echo absint( $bubble_font_size ); ?>px;">
 
         <div id="sw-list" class="sw-list<?php echo $show_labels ? '' : ' sw-no-labels'; ?>" aria-hidden="true">
-            <?php foreach ( $messengers as $m ) : ?>
+            <?php foreach ( $messengers as $m ) :
+                // Custom app schemes (viber://, tg://, etc.) fail to hand off to the
+                // native app on mobile when opened via target="_blank" — keep those
+                // in the same tab on mobile; desktop keeps target="_blank" as before.
+                $new_tab = ! ( wp_is_mobile() && obrisowi_is_app_scheme_url( $m['url'] ) );
+            ?>
             <a href="<?php echo esc_url( $m['url'] ); ?>" class="sw-item"
                data-messenger="<?php echo esc_attr( $m['key'] ?? '' ); ?>"
-               target="_blank" rel="noopener noreferrer"
+               <?php if ( $new_tab ) : ?>target="_blank" rel="noopener noreferrer"<?php endif; ?>
                aria-label="<?php echo esc_attr( $m['label'] ); ?>">
                 <span class="sw-item-icon"><?php echo wp_kses( obrisowi_get_messenger_icon_html( $m, 'sw-icon-img', '' ), $allowed_img ); ?></span>
                 <?php if ( $show_labels ) : ?><span class="sw-item-label"><?php echo esc_html( $m['label'] ); ?></span><?php endif; ?>
@@ -290,6 +295,10 @@ function obrisowi_get_general() {
         'bubble_delay'      => 3,
         'language'          => 'en',
     ] );
+}
+
+function obrisowi_is_app_scheme_url( $url ) {
+    return (bool) preg_match( '#^[a-z][a-z0-9+.-]*://#i', $url ) && ! preg_match( '#^https?://#i', $url );
 }
 
 function obrisowi_get_active_messengers() {

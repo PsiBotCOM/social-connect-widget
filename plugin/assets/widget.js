@@ -34,7 +34,29 @@
         } catch (e) {}
     }
 
-    track('view');
+    /* View is counted once per 24h per browser, via localStorage timestamp */
+    var VIEW_STORAGE_KEY = 'obrisowi_view_tracked';
+    var VIEW_TTL_MS      = 24 * 60 * 60 * 1000;
+
+    function shouldTrackView() {
+        try {
+            var last = parseInt(localStorage.getItem(VIEW_STORAGE_KEY), 10);
+            return !last || (Date.now() - last) > VIEW_TTL_MS;
+        } catch (e) {
+            return true;
+        }
+    }
+
+    function markViewTracked() {
+        try {
+            localStorage.setItem(VIEW_STORAGE_KEY, String(Date.now()));
+        } catch (e) {}
+    }
+
+    if (shouldTrackView()) {
+        track('view');
+        markViewTracked();
+    }
 
     list.querySelectorAll('.sw-item').forEach(function (link) {
         link.addEventListener('click', function () {

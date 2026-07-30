@@ -4,7 +4,7 @@ Tags: messenger, social, whatsapp, telegram, widget
 Requires at least: 5.9
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -56,6 +56,10 @@ Yes, tested with Elementor, Flatsome, and standard WordPress themes.
 5. Admin panel — Dashboard with stats chart
 
 == Changelog ==
+
+= 1.0.2 =
+* Fix: Viber links now stay in the same tab on mobile so the app opens correctly instead of reloading the page
+* Widget view counter is now deduplicated per browser for 24 hours (click stats unaffected)
 
 = 1.0.1 =
 * Initial public release
